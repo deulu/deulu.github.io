@@ -220,7 +220,7 @@ $("#send-mail").click(function () {
         }
 
 
-        var comment = $('textarea#comment').val(); // get the value of the input field
+        var comment = $('textarea#message').val(); // get the value of the input field
         if (comment == "" || comment == " ") {
             $('#err-comment').show(500);
             $('#err-comment').delay(4000);
@@ -233,25 +233,23 @@ $("#send-mail").click(function () {
         }
 
         if (error == false) {
+            //var dataString = $('#contact-form').serializeObject(); // Collect data from form
             var dataString = $('#contact-form').serialize(); // Collect data from form
             $.ajax({
                 type: "POST",
-                url: $('#contact-form').attr('action'),
+                url: "https://formspree.io/formspree-io-201507@deulu.com",
                 data: dataString,
                 timeout: 6000,
-                error: function (request, error) {
-
+                dataType: "json",
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#errorSend').show();
+                    console.error('ERROR: jqXHR: %o, textStatus:%o, errorThrow:%o', jqXHR, textStatus, errorThrown);
                 },
-                success: function (response) {
-                    response = $.parseJSON(response);
-                    if (response.success) {
-                        $('#successSend').show();
-                        $("#name").val('');
-                        $("#email").val('');
-                        $("#comment").val('');
-                    } else {
-                        $('#errorSend').show();
-                    }
+                success: function (data, textStatus, jqXHR) {
+                    $('#successSend').show();
+                    $("#name").val('');
+                    $("#email").val('');
+                    $("#message").val('');
                 }
             });
             return false;
@@ -406,3 +404,20 @@ function initializeMap() {
     //
     //infowindow.open(map, marker);
 }
+
+$.fn.serializeObject = function()
+{
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name]) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
