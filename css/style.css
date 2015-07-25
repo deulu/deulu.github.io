@@ -724,6 +724,7 @@ p {
     font-size:30px;
 }
 .map-wrapper {
+    background-image: url('../images/hk_map.png');
     position:relative;
     height:500px;
 }
